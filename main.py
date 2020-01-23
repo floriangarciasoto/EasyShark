@@ -19,7 +19,7 @@ def caps():
 
 def captures():
 	i = 0
-	nombre['text'] = 'Captures en cours ...'
+	nombre['text'] = 'Capture en cours ...'
 	fenetre.update_idletasks()
 	for packet in capture.sniff_continuously(packet_count=100):
 		i += 1
