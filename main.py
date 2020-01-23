@@ -24,7 +24,7 @@ def captures():
 	for packet in capture.sniff_continuously(packet_count=100):
 		i += 1
 		trame = str(i)+'    '
-		if packet[0].type == '0x00000800':
+		if packet.eth.type == '0x00000800':
 			trame += 'IPv4    '
 			if packet.ip.proto == '1':
 				trame += 'ICMP'
@@ -34,7 +34,7 @@ def captures():
 					trame += ' PONG'
 				trame += '    '
 			trame += 'De %s    à    %s' % (packet.ip.src, packet.ip.dst)
-		elif packet[0].type == '0x000086dd':
+		elif packet.eth.type == '0x000086dd':
 			trame += 'IPv6    '
 			trame += 'De %s    à    %s    (imbuvable)' % (packet.ipv6.src, packet.ipv6.dst)
 		else:
@@ -51,7 +51,7 @@ def clicktrame(evt):
 		fenetre.update_idletasks()
 
 fenetre = tk.Tk()
-fenetre.title('Easyshark')
+fenetre.title('EasyShark')
 liste = Listbox(fenetre, height=20, width=100)
 liste.bind('<<ListboxSelect>>', clicktrame)
 liste.pack()
