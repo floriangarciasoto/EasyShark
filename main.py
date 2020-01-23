@@ -19,7 +19,7 @@ def caps():
 
 def captures():
 	i = 0
-	nombre['text'] = "Captures en cours ..."
+	nombre['text'] = 'Captures en cours ...'
 	fenetre.update_idletasks()
 	for packet in capture.sniff_continuously(packet_count=100):
 		i += 1
@@ -40,8 +40,8 @@ def captures():
 		else:
 			trame += 'PABXv4'
 		liste.insert(END, trame)
-		paquets.append("Trame "+str(i)+"\n"+str(packet))
-		nombre['text'] = "Trames capturées : %d" % i
+		paquets.append('Trame '+str(i)+'\n'+str(packet))
+		nombre['text'] = 'Trames capturées : %d' % i
 		fenetre.update_idletasks()
 
 def clicktrame(evt):
@@ -51,11 +51,11 @@ def clicktrame(evt):
 		fenetre.update_idletasks()
 
 fenetre = tk.Tk()
-fenetre.title("Vulgarises vulgarises et tu verras")
+fenetre.title('Easyshark')
 liste = Listbox(fenetre, height=20, width=100)
 liste.bind('<<ListboxSelect>>', clicktrame)
 liste.pack()
-nombre = Label(fenetre, text="Appuies sur le bouton en bas et tu verras.")
+nombre = Label(fenetre, text='Appuies sur le bouton en bas et tu verras.')
 nombre.pack()
 details = ScrolledText(fenetre, height=10, width=100)
 details.pack()
