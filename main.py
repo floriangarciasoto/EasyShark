@@ -37,6 +37,8 @@ def captures():
 		elif packet.eth.type == '0x000086dd':
 			trame += 'IPv6    '
 			trame += 'De %s    à    %s    (imbuvable)' % (packet.ipv6.src, packet.ipv6.dst)
+		elif packet.eth.type == '0x00000806':
+			trame += 'ARP'
 		else:
 			trame += 'PABXv4'
 		liste.insert(END, trame)
