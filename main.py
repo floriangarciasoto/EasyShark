@@ -42,7 +42,7 @@ def captures():
 		else:
 			trame += 'PABXv4'
 		liste.insert(END, trame)
-		paquets.append('Trame '+str(i)+'\n'+str(packet))
+		paquets.append('Trame %d\n%s' % (i,packet))
 		nombre['text'] = 'Trames capturées : %d' % i
 		fenetre.update_idletasks()
 
@@ -61,5 +61,5 @@ nombre = Label(fenetre, text='Appuies sur le bouton en bas et tu verras.')
 nombre.pack()
 details = ScrolledText(fenetre, height=10, width=100)
 details.pack()
-tk.Button(fenetre, text='Captures captures et tu verras', command=caps).pack()
+tk.Button(fenetre, text='Capture capture et tu verras', command=caps).pack()
 tk.mainloop()
