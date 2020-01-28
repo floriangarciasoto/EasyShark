@@ -35,32 +35,32 @@ def captures():
 		trame = str(i)+'    '
 		if 'eth' in packet:
 			trame += 'Ethernet    '
+			if packet[0].type == '0x00000800':
+				trame += 'IPv4    '
+				if packet.ip.proto == '1':
+					trame += 'ICMP'
+					if packet.icmp.type == '8':
+						trame += ' PING'
+					if packet.icmp.type == '0':
+						trame += ' PONG'
+					trame += '    De %s    à    %s' % (packet.ip.src, packet.ip.dst)
+				elif packet.ip.proto == '6':
+					trame += 'TCP    '
+					if packet.tcp.dstport == '80':
+						trame += 'HTTP    '
+						if packet.tcp.flags_syn == '1':
+							trame += 'Connexion au site : %s' % packet.ip.dst
+						elif 'http' in packet:
+							if 'urlencoded-form' in packet:
+								trame += 'Regardes-moi le ce con il passe ses paramètres en clair :  '+arg(str(packet['urlencoded-form']))
+			elif packet[0].type == '0x000086dd':
+				trame += 'IPv6     De %s    à    %s    (imbuvable.com)' % (packet.ipv6.src, packet.ipv6.dst)
+			elif packet[0].type == '0x00000806':
+				trame += 'ARP ma gueule !'
+			else:
+				trame += 'IPBXv4'
 		else:
 			trame += 'Ah ben là C compliqué    '
-		if packet[0].type == '0x00000800':
-			trame += 'IPv4    '
-			if packet.ip.proto == '1':
-				trame += 'ICMP'
-				if packet.icmp.type == '8':
-					trame += ' PING'
-				if packet.icmp.type == '0':
-					trame += ' PONG'
-				trame += '    De %s    à    %s' % (packet.ip.src, packet.ip.dst)
-			elif packet.ip.proto == '6':
-				trame += 'TCP    '
-				if packet.tcp.dstport == '80':
-					trame += 'HTTP    '
-					if packet.tcp.flags_syn == '1':
-						trame += 'Connexion au site : %s' % packet.ip.dst
-					elif 'http' in packet:
-						if 'urlencoded-form' in packet:
-							trame += 'Regardes-moi le ce con il passe ses paramètres en clair :  '+arg(str(packet['urlencoded-form']))
-		elif packet[0].type == '0x000086dd':
-			trame += 'IPv6     De %s    à    %s    (imbuvable.com)' % (packet.ipv6.src, packet.ipv6.dst)
-		elif packet[0].type == '0x00000806':
-			trame += 'ARP ma gueule !'
-		else:
-			trame += 'IPBXv4'
 		liste.insert(END, trame)
 		paquets.append('Trame %d\n%s' % (i,packet))
 		nombre['text'] = 'Trames capturées : %d' % i
