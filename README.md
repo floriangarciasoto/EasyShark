@@ -1,3 +1,4 @@
+
 # EasyShark
 Projet RT2 sur un Wireshark simplifié
 ## Introduction
@@ -13,11 +14,15 @@ Ce programme codé en Python utilise deux librairies principales qui définnisse
 ### Les libraires utilisées
 
 #### Pyshark
-
-
+La librairie ```pyshark``` va être au coeur de notre projet. Elle va permettre de simplifier énormement la capture de trame et surtout l'extraction des données sur chaque couche :
+```python
+import pyshark
+```
+Cette librairie interragit directement avec Wireshark, il doit donc être installé sur la machine.
+Les paquets capturés pourront être décrits de manière textuelle avec un ```string``` qui va décrire tous les layers ou on pourra accéder à des informations plus précises en effectuant des requêtes sur l'objet généré par ```pyshark```.
 #### Tkinter
 
-Tout d'abord, afin que le logiciel ne soit pas affreux et qu'il puisse être utilisé par n'importe qui de la manière la plus simple possible, il est important qu'il soit graphique. Pour cela, on utilise la librairie ```tkinter```.
+Tout d'abord, afin que le logiciel ne soit pas affreux et qu'il puisse être utilisé par n'importe qui de la manière la plus simple possible, il est important qu'il soit graphique. Pour cela, on utilise la librairie ```tkinter``` :
 ```python
 import tkinter as tk
 ```
@@ -57,7 +62,8 @@ La prise en compte des arguments se fait avec la librairie ```sys```, on utilise
 $ sudo python3 main.py <interface> <nombre de paquets>
 ```
 Comme on peut le voir, le premier argument sera toujours le nom du programme ```main.py``` .
-Les deux autres argument sont optionnels car ils définnisent des variables qui ont des valeurs par défaut : 
+On va donc pouvoir définir simplement l'interface sur laquelle on veut capturer ainsi que le nombre de paquets maximum que l'on veut obtenir (obligatoire) en rentrant deux arguments de plus.
+Ces deux autres argument sont optionnels car ils définnisent ces variables qui ont chacune une valeur par défaut : 
 ```python
 interf = 'any'
 mx = 100
@@ -68,30 +74,79 @@ On traite donc le deuxième argument dans ce cas :
 if len(sys.argv) > 1:
 	interf = str(sys.argv[1])
 ```
-
+Si la taille de ```sys.argv``` est cette fois-ci supérieure à 2, c'est que le troisième argument ```<nombre de paquets>``` a été saisi, on le traite donc de la même façon :
+```python
+if len(sys.argv) > 2:
+	mx = int(sys.argv[2])
+```
+Ces paramètres étant saisis, on peut s'attaquer à la suite du programme.
 #### Préparation à la capture
-
+Afin de pouvoir capturer avec ```pyshark```, il est nécessaire d'indiquer une variable afin de pouvoir la parcourir. Cette variable va contenir les paquets un à un capturés.
+Comme il s'agit d'une capture en temps réel, on utilise la fonction  ```LiveCapture()``` en précisant l'interface utilisée :
 ```python
 capture = pyshark.LiveCapture(interface=interf)
+```
+Comme l'on vaut pouvoir accéder à tout moment à n'importe quelle trame puisque l'on pourra cliquer sur une liste déroulante, il faut stocker les trames capturées dans une variable :
+```python
 paquets = list()
 ```
-
+Pour se qui est de la préparation de la capture, on a tout ce qu'il nous faut. On peut maintenant passer à la partie graphique.
 #### Création de la fenêtre
-
+De la même façon qu'avec ```pyshark```, on précise une variable qui va nous permettre d'interagir avec la fenêtre crée par ```Tkinter``` :
 ```python
 fenetre = tk.Tk()
+```
+On précise ensuite le nom de la fenêtre :
+```python
 fenetre.title('EasyShark')
+```
+On choisi de la nommer EasyShark, le nom accrocheur de notre Wireshark simplifié pour les noobs en réseau !
+On va ensuite ajouter un à un les éléments nécessaires. ```Tkinter``` par défaut ajoute les éléments sur la fenêtre de haut en bas de manière centrée, ce qui est très bien visuellement.
+On ajoute donc d'abord une phrase indiquant les paramètres choisis par l'utilisateur :
+```python
 Label(fenetre, text='Capture de %d paquets sur l\'interface %s' % (mx,interf)).pack()
+```
+L'élément ```Label()``` va permettre de créer du texte directement intégrable dans la fenêtre et la fonction ```pack()``` va permettre de pouvoir directement l'ajouter à la fenêtre.
+On ajoute ensuite l'élément ```Listebox()``` qui va permettre d'afficher en tant que liste déroulante les paquets capturés :
+```python
 liste = Listbox(fenetre, height=20, width=100)
+```
+On précise la fenêtre que l'on utilise ainsi que les dimensions de la liste, puisqu'il s'agit d'un espace de texte et non juste un texte. La hauteur et la largeur choisies ne sont absolument pas obligatoirement à ces valeurs là.
+Le second but de cette liste est de pouvoir intéragir avec l'utilisateur lors d'un clique sur une des lignes. On va donc attribuer l'évenement du clique à la fonction qui s'en chargera :
+```python
 liste.bind('<<ListboxSelect>>', clicktrame)
+```
+L'obet ```'<<ListboxSelect>>'``` sera envoyé en tant qu'argument à la fonction ```clicktrame()```.
+On ajoute ensuite de la même manière la liste à la fenêtre :
+```python
 liste.pack()
+```
+Il est intéressant de pouvoir suivre l'évolution de la capture, en pouvant visualiser en temps réel le nombre de trames capturées.
+Pour cela on définit cette fois-ci une variable qui va contenir le ```Label()```, afin de pouvoir le modifier plus tard :
+```python
 nombre = Label(fenetre, text='Appuies sur le bouton en bas et tu verras.')
+```
+On l'ajoute ensuite de la même manière à la fenêtre :
+```python
 nombre.pack()
+```
+
+```python
 details = ScrolledText(fenetre, height=10, width=100)
+```
+
+```python
 details.pack()
+```
+
+```python
 tk.Button(fenetre, text='Capture capture et tu verras', command=caps).pack()
+```
+
+```python
 tk.mainloop()
 ```
+
 
 ### Les fonctions
 
