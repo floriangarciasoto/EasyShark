@@ -18,7 +18,6 @@ if len(sys.argv) > 1:
 	interf = str(sys.argv[1])
 if len(sys.argv) > 2:
 	mx = int(sys.argv[2])
-print(interf,mx)
 
 capture = pyshark.LiveCapture(interface=interf)
 paquets = list()
