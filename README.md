@@ -149,56 +149,136 @@ Les commandes que nous avons vu sont donc seulement là pour préparer EasyShark
 ### Les fonctions
 Les fonctions sont le coeur du programme. Leur rôle va être de modifier la fenêtre en fonction de la capture et des actions effectuées par l'utilisateur.
 #### Capture de trames
-
+La fonction ```captures()``` va être le coeur du programme. C'est dans cette fonction que va s'effectuer la capture de trames.
+L'utilisateur doit pouvoir effectuer des actions pendant que la capture est en cours. Or, si l'on déclenche la fonction ```captures()``` lors du clique, le programme ne prendra pas en compte ces actions puisqu'il va attendre que la fonction se termine.
+Il va donc falloir la faire tourner en arrière plan, en utilisant ```_thread``` :
+```python
+def caps():
+	_thread.start_new_thread(captures,())
+```
+On précise donc la fonction ```captures()``` sans envoyer d'arguments .
+On va donc bien pouvoir s'interesser à cette dernière. Cette fonction aura pour rôle de remplir la liste de la fenêtre avec les paquets capturés en temps réel. C'est elle qui va remplir la variable ```paquets```, qui va contenir sous forme de tableau l'ensemble des paquets sous forme de texte. Enfin, c'est elle qui va écrire ce qu'il faut sur chaque ligne de la liste, une description brève selon la trame que l'on va devoir définir.
+On lance donc la fonction avec un itérateur ```i``` qui va nous permettre de numérotter les trames :
 ```python
 def captures():
 	i = 0
+```
+
+```python
 	nombre['text'] = 'En attente de trafic ... PING un peu !'
 	fenetre.update_idletasks()
+```
+
+```python
+	for packet in capture.sniff_continuously(packet_count=mx):
+```
+
+```python
 	for packet in capture.sniff_continuously(packet_count=mx):
 		i += 1
 		trame = str(i)+'    '
+```
+
+```python
 		if 'eth' in packet:
 			trame += 'Ethernet    '
+```
+
+```python
+		else:
+			trame += 'Ah ben là C compliqué    '
+```
+
+```python
 			if packet.eth.type == '0x00000800':
 				trame += 'IPv4    '
+```
+
+```python
+			elif packet.eth.type == '0x000086dd':
+				trame += 'IPv6     De %s    à    %s    (imbuvable.com)' % (packet.ipv6.src, packet.ipv6.dst)
+```
+
+```python
+			elif packet.eth.type == '0x00000806':
+				trame += 'ARP ma gueule !'
+```
+
+```python
+			else:
+				trame += 'IPBXv4'
+```
+
+```python
 				if packet.ip.proto == '1':
 					trame += 'ICMP'
+```
+
+```python
 					if packet.icmp.type == '8':
 						trame += ' PING'
+```
+
+```python
 					if packet.icmp.type == '0':
 						trame += ' PONG'
+```
+
+```python
 					trame += '    De %s    à    %s' % (packet.ip.src, packet.ip.dst)
+```
+
+```python
 				elif packet.ip.proto == '6':
 					trame += 'TCP    '
+```
+
+```python
 					if packet.tcp.dstport == '80':
 						trame += 'HTTP    '
+```
+
+```python
 						if packet.tcp.flags_syn == '1':
 							trame += 'Connexion au site : %s' % packet.ip.dst
+```
+
+```python
 						elif 'http' in packet:
 							if 'urlencoded-form' in packet:
 								trame += 'Regardes-moi le ce con il passe ses paramètres en clair :  '+arg(str(packet['urlencoded-form']))
-			elif packet.eth.type == '0x000086dd':
-				trame += 'IPv6     De %s    à    %s    (imbuvable.com)' % (packet.ipv6.src, packet.ipv6.dst)
-			elif packet.eth.type == '0x00000806':
-				trame += 'ARP ma gueule !'
-			else:
-				trame += 'IPBXv4'
-		else:
-			trame += 'Ah ben là C compliqué    '
+```
+
+```python
 		liste.insert(END, trame)
+```
+
+```python
 		paquets.append('Trame %d\n%s' % (i,packet))
+```
+
+```python
 		nombre['text'] = 'Trames capturées : %d' % i
+```
+
+```python
 		fenetre.update_idletasks()
 ```
+
 
 #### Clique sur une trame
 
 ```python
 def clicktrame(evt):
 	if len(evt.widget.curselection()) > 0:
+```
+
+```python
 		details.delete(1.0,END)
 		details.insert(END, '%s' % paquets[int(evt.widget.curselection()[0])])
+```
+
+```python
 		fenetre.update_idletasks()
 ```
 
@@ -209,6 +289,9 @@ def arg(packet):
 	packet = packet.split('\n')
 	packet.pop(0)
 	tx = ''
+```
+
+```python
 	for i in range(0,len(packet)-1,3):
 		tx += packet[i+1][6:]+' : '+packet[i+2][8:]+', '
 	return tx[:-2]
