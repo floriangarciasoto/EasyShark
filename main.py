@@ -34,7 +34,7 @@ def captures():
 		trame = str(i)+'    '
 		if 'eth' in packet:
 			trame += 'Ethernet    '
-			if packet[0].type == '0x00000800':
+			if packet.eth.type == '0x00000800':
 				trame += 'IPv4    '
 				if packet.ip.proto == '1':
 					trame += 'ICMP'
@@ -52,9 +52,9 @@ def captures():
 						elif 'http' in packet:
 							if 'urlencoded-form' in packet:
 								trame += 'Regardes-moi le ce con il passe ses paramètres en clair :  '+arg(str(packet['urlencoded-form']))
-			elif packet[0].type == '0x000086dd':
+			elif packet.eth.type == '0x000086dd':
 				trame += 'IPv6     De %s    à    %s    (imbuvable.com)' % (packet.ipv6.src, packet.ipv6.dst)
-			elif packet[0].type == '0x00000806':
+			elif packet.eth.type == '0x00000806':
 				trame += 'ARP ma gueule !'
 			else:
 				trame += 'IPBXv4'
@@ -68,7 +68,7 @@ def captures():
 def clicktrame(evt):
 	if len(evt.widget.curselection()) > 0:
 		details.delete(1.0,END)
-		details.insert(END, '%s' % paquets[int(evt.widget.curselection()[0])])
+		details.insert(END, '%s' % paquets[int(evt.widget.curselection().eth)])
 		fenetre.update_idletasks()
 
 def arg(packet):
