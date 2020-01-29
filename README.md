@@ -130,26 +130,24 @@ On l'ajoute ensuite de la même manière à la fenêtre :
 ```python
 nombre.pack()
 ```
-
+Lors d'un clique sur une trame, il peut être intéressant de voir les détails affreux d'une trame, en affichant sur un champ de texte l'intégralité de la trame sous une chaîne de caractère. Cepandant, vu qu'il s'agit dans tous les cas de beaucoup de texte, il faut utiliser l'élément ```ScrolledText()``` qui va nous permettre d'avoir un champ sur lequel on pourra faire défiler toutes les informations de la trame en détails :
 ```python
 details = ScrolledText(fenetre, height=10, width=100)
-```
-
-```python
 details.pack()
 ```
-
+Le dernier élément que l'on ajoute est le bouton permettant de commencer la capture :
 ```python
 tk.Button(fenetre, text='Capture capture et tu verras', command=caps).pack()
 ```
-
+Ce bouton permettra de lancer la fonction ```caps()``` qui elle même lancera la fonction ```captures()``` en sous processus.
+La dernière commande lancée en début de programme est celle qui va permettre d'afficher la fenêtre en question :
 ```python
 tk.mainloop()
 ```
-
-
+Cela va permettre de garder le programme en exécution tant que la fenêtre ne sera pas fermée.
+Les commandes que nous avons vu sont donc seulement là pour préparer EasyShark. La capture et la fenêtre sont les seules choses nécessaire pour initialiser le logiciel. Nous allons maintenant voir la partie la plus importante, les fonctions.
 ### Les fonctions
-
+Les fonctions sont le coeur du programme. Leur rôle va être de modifier la fenêtre en fonction de la capture et des actions effectuées par l'utilisateur.
 #### Capture de trames
 
 ```python
