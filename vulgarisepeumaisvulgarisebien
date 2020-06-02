@@ -1,8 +1,14 @@
-icmp :
+tout l'temps :
 mac s - mac d
 ip s - ip d
 
+icmp :
+par défaut
+
 http :
-mac s - mac d
-ip s - ip d
-p s - p d
+par défaut + ports s et d + url
+
+dns :
+par défaut + port s + nom d'domaine
+
+sans oublier la thèse
