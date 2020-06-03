@@ -2,9 +2,9 @@
 
 Projet de seconde année en R&T
 
-GARCIA Florian
-GUIRADO Adrien
-BANULS Baptiste
+GARCIA Florian<br/>
+GUIRADO Adrien<br/>
+BANULS Baptiste<br/>
 ZHOU Yuhnan
 
 *Le texte en italique représente les annotations, elles ne seront plus présentes dans le rapport final.*
