@@ -7,31 +7,29 @@
 
 import pyshark
 import tkinter as tk
-from tkinter import ttk
 from tkinter import *
 from tkinter.scrolledtext import ScrolledText
 import _thread
 import sys
-import os
 
-def commencerCapture():
-	global captureEnCours
-	captureEnCours = True
-	_thread.start_new_thread(capture,())
+interf = 'any'
+mx = 100
+if len(sys.argv) > 1:
+	interf = str(sys.argv[1])
+if len(sys.argv) > 2:
+	mx = int(sys.argv[2])
 
-def changerInterface(event):
-	global interfaceCaptureEnCours
-	interfaceCaptureEnCours = interfaces[listeInterfaces.current()][0]
+capture = pyshark.LiveCapture(interface=interf)
+paquets = list()
 
-def capture():
+def caps():
+	_thread.start_new_thread(captures,())
+
+def captures():
 	i = 0
 	nombre['text'] = 'En attente de trafic ... PING un peu !'
 	fenetre.update_idletasks()
-	capture = pyshark.LiveCapture(interface=interfaceCaptureEnCours)
-	for packet in capture.sniff_continuously(packet_count=100):
-		print("BC")
-		if captureEnCours == False:
-			break
+	for packet in capture.sniff_continuously(packet_count=mx):
 		i += 1
 		trame = str(i)+'    '
 		if 'eth' in packet:
@@ -67,14 +65,10 @@ def capture():
 		nombre['text'] = 'Trames capturées : %d' % i
 		fenetre.update_idletasks()
 
-def stopperCapture():
-	global captureEnCours
-	captureEnCours = False
-
-def clicktrame(event):
-	if len(event.widget.curselection()) > 0:
+def clicktrame(evt):
+	if len(evt.widget.curselection()) > 0:
 		details.delete(1.0,END)
-		details.insert(END, '%s' % paquets[int(event.widget.curselection()[0])])
+		details.insert(END, '%s' % paquets[int(evt.widget.curselection().eth)])
 		fenetre.update_idletasks()
 
 def arg(packet):
@@ -85,60 +79,15 @@ def arg(packet):
 		tx += packet[i+1][6:]+' : '+packet[i+2][8:]+', '
 	return tx[:-2]
 
-interfaces = list()
-paquets = list()
-
-simplificationInterfaces = {
-	'Câble' : ['enp','eno','eth'],
-	'Wifi' : ['wlp'],
-	'Loopback' : ['lo']
-}
-
-for nomSystemeInterface in os.popen('ip a | grep ^[0-9]*: | cut -d" " -f 2 | sed "s/.$//g"').read().split("\n")[:-1]:
-	interfaces.append([nomSystemeInterface,'Inconnue ('+nomSystemeInterface+')'])
-
-for i in range(len(interfaces)):
-	for j in simplificationInterfaces:
-		for n in simplificationInterfaces[j]:
-			if interfaces[i][0][:len(n)] == n:
-				interfaces[i][1] = j
-
-interfaceCaptureEnCours = interfaces[0][0]
-captureEnCours = False
-
-listeInterfacesValeurs = list()
-for i in interfaces:
-	listeInterfacesValeurs.append(i[1])
-
-
-
 fenetre = tk.Tk()
-
 fenetre.title('EasyShark')
-
-Label(fenetre, text='Commences pas choisir l\'interface').pack()
-
-listeInterfaces = ttk.Combobox(fenetre, values=listeInterfacesValeurs)
-listeInterfaces.current(0)
-listeInterfaces.pack()
-listeInterfaces.bind("<<ComboboxSelected>>", changerInterface)
-
-tk.Button(fenetre, text='Capturer', command=commencerCapture).pack()
-
-tk.Button(fenetre, text='Stopper', command=stopperCapture).pack()
-
-Label(fenetre, text='Liste des trames :').pack()
-
+Label(fenetre, text='Capture de %d paquets sur l\'interface %s' % (mx,interf)).pack()
 liste = Listbox(fenetre, height=20, width=100)
 liste.bind('<<ListboxSelect>>', clicktrame)
 liste.pack()
-
-nombre = Label(fenetre, text='Aucune trame capturée.')
+nombre = Label(fenetre, text='Appuies sur le bouton en bas et tu verras.')
 nombre.pack()
-
-Label(fenetre, text='Détails imbuvables :').pack()
-
 details = ScrolledText(fenetre, height=10, width=100)
 details.pack()
-
+tk.Button(fenetre, text='Capture capture et tu verras', command=caps).pack()
 tk.mainloop()
