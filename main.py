@@ -16,8 +16,12 @@ import os
 
 def commencerCapture():
 	global captureEnCours
-	captureEnCours = True
-	_thread.start_new_thread(capture,())
+	if captureEnCours == False:
+		captureEnCours = True
+		global paquets
+		paquets = list()
+		nombre['text'] = 'Aucune trame capturée.'
+		_thread.start_new_thread(capture,())
 
 def changerInterface(event):
 	global interfaceCaptureEnCours
@@ -29,7 +33,6 @@ def capture():
 	fenetre.update_idletasks()
 	capture = pyshark.LiveCapture(interface=interfaceCaptureEnCours)
 	for packet in capture.sniff_continuously(packet_count=100):
-		print("BC")
 		if captureEnCours == False:
 			break
 		i += 1
@@ -116,29 +119,31 @@ fenetre = tk.Tk()
 
 fenetre.title('EasyShark')
 
-Label(fenetre, text='Commences pas choisir l\'interface').pack()
+Label(fenetre, text='Commences pas choisir l\'interface : ').grid(row=0, column=0, columnspan=2)
 
 listeInterfaces = ttk.Combobox(fenetre, values=listeInterfacesValeurs)
 listeInterfaces.current(0)
-listeInterfaces.pack()
+listeInterfaces.grid(row=0, column=1, columnspan=2)
 listeInterfaces.bind("<<ComboboxSelected>>", changerInterface)
 
-tk.Button(fenetre, text='Capturer', command=commencerCapture).pack()
+tk.Button(fenetre, text='Capturer', command=commencerCapture).grid(row=1,column=0, sticky=E)
 
-tk.Button(fenetre, text='Stopper', command=stopperCapture).pack()
+tk.Button(fenetre, text='Stopper', command=stopperCapture).grid(row=1,column=1)
 
-Label(fenetre, text='Liste des trames :').pack()
+tk.Button(fenetre, text='Réiniatiliser', command=stopperCapture).grid(row=1,column=2, sticky=W)
+
+Label(fenetre, text='Liste des trames :').grid(row=2, columnspan=3)
 
 liste = Listbox(fenetre, height=20, width=100)
 liste.bind('<<ListboxSelect>>', clicktrame)
-liste.pack()
+liste.grid(row=3, columnspan=3)
 
 nombre = Label(fenetre, text='Aucune trame capturée.')
-nombre.pack()
+nombre.grid(row=4, columnspan=3)
 
-Label(fenetre, text='Détails imbuvables :').pack()
+Label(fenetre, text='Détails imbuvables, regardes pas si t\'es une âme sensible :').grid(row=5, columnspan=3)
 
 details = ScrolledText(fenetre, height=10, width=100)
-details.pack()
+details.grid(row=6, columnspan=3)
 
 tk.mainloop()
