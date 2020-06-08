@@ -1,9 +1,47 @@
-# apt update
-# apt install python
-# apt install python3-tk
-# pip3 install pyshark
+# *****************************************
+# *      * * * *  EasyShark  * * * *      *
+# *        * * * Projet  RT2 * * *        *
+# *                                       *
+# *          * GARCIA  Florian *          *
+# *          * GUIRADO  Adrien *          *
+# *          * BANULS Baptiste *          *
+# *            * ZHOU Yuhnan *            *
+# *****************************************
 
-# sudo python3 main.py [<interface> <nombre de paquets>]
+
+# *****************************************
+# *        Installation nécessaire        *
+# *****************************************
+
+# OS nécessaire : Linux
+
+# Paquets à installer :
+# - Python 3  : sudo apt install python
+# - TKinter   : sudo apt install python3-tk
+# - PIP 3     : sudo pip3 install pyshark
+# - WireShark : sudo apt install wireshark
+# - TShark    : sudo apt install tshark
+
+# Configuration recommandée :
+# - accorder l'accès aux interfaces
+#   pour les non-super-utilisateurs
+#   (si ce n'est pas le cas, il faudra être
+#   super-utilisateur pour faire fonctionner
+#   la capture)
+
+
+# *****************************************
+# *             Fonctionnement            *
+# *****************************************
+
+# Au choix :
+# - Sur le terminal : python3 main.py
+# - Utiliser le double click sur le fichier
+#   si l'OS le permet.
+
+
+
+# --- Libraires ---
 
 import pyshark
 import tkinter as tk
@@ -14,6 +52,8 @@ import _thread
 import os
 
 
+
+# --- Fonctions ---
 
 def commencerCapture():
 	global captureEnCours
@@ -95,6 +135,8 @@ def arg(packet):
 
 
 
+# --- Initialisation d'EasyShark ---
+
 interfaces = list()
 paquets = list()
 
@@ -128,6 +170,8 @@ for i in interfaces:
 	listeInterfacesValeurs.append(i[1])
 
 
+
+# --- Création de la fenêtre ---
 
 fenetre = tk.Tk()
 
