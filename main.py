@@ -18,9 +18,6 @@ def commencerCapture():
 	global captureEnCours
 	if captureEnCours == False:
 		captureEnCours = True
-		global paquets
-		paquets = list()
-		nombre['text'] = 'Aucune trame capturée.'
 		_thread.start_new_thread(capture,())
 
 def changerInterface(event):
@@ -28,15 +25,15 @@ def changerInterface(event):
 	interfaceCaptureEnCours = interfaces[listeInterfaces.current()][0]
 
 def capture():
-	i = 0
+	numeroDerniereTrame = 0
 	nombre['text'] = 'En attente de trafic ... PING un peu !'
 	fenetre.update_idletasks()
 	capture = pyshark.LiveCapture(interface=interfaceCaptureEnCours)
-	for packet in capture.sniff_continuously(packet_count=100):
+	for packet in capture.sniff_continuously(packet_count=10000):
 		if captureEnCours == False:
 			break
-		i += 1
-		trame = str(i)+'    '
+		numeroDerniereTrame += 1
+		trame = str(numeroDerniereTrame)+'    '
 		if 'eth' in packet:
 			trame += 'Ethernet    '
 			if packet.eth.type == '0x00000800':
@@ -65,14 +62,21 @@ def capture():
 				trame += 'IPBXv4'
 		else:
 			trame += 'Ah ben là C compliqué    '
-		liste.insert(END, trame)
-		paquets.append('Trame %d\n%s' % (i,packet))
-		nombre['text'] = 'Trames capturées : %d' % i
+		listeTrames.insert(END, trame)
+		paquets.append('Trame %d\n%s' % (numeroDerniereTrame,packet))
+		nombre['text'] = 'Trames capturées : %d' % numeroDerniereTrame
 		fenetre.update_idletasks()
 
 def stopperCapture():
 	global captureEnCours
 	captureEnCours = False
+
+def reinitialiserCapture():
+	global paquets
+	listeTrames.delete(0,len(paquets)-1)
+	numeroDerniereTrame = 0
+	paquets = list()
+	nombre['text'] = 'Aucune trame capturée.'
 
 def clicktrame(event):
 	if len(event.widget.curselection()) > 0:
@@ -108,6 +112,7 @@ for i in range(len(interfaces)):
 
 interfaceCaptureEnCours = interfaces[0][0]
 captureEnCours = False
+numeroDerniereTrame = 0
 
 listeInterfacesValeurs = list()
 for i in interfaces:
@@ -130,13 +135,13 @@ tk.Button(fenetre, text='Capturer', command=commencerCapture).grid(row=1,column=
 
 tk.Button(fenetre, text='Stopper', command=stopperCapture).grid(row=1,column=1)
 
-tk.Button(fenetre, text='Réiniatiliser', command=stopperCapture).grid(row=1,column=2, sticky=W)
+tk.Button(fenetre, text='Réiniatiliser', command=reinitialiserCapture).grid(row=1,column=2, sticky=W)
 
 Label(fenetre, text='Liste des trames :').grid(row=2, columnspan=3)
 
-liste = Listbox(fenetre, height=20, width=100)
-liste.bind('<<ListboxSelect>>', clicktrame)
-liste.grid(row=3, columnspan=3)
+listeTrames = Listbox(fenetre, height=20, width=100)
+listeTrames.bind('<<ListboxSelect>>', clicktrame)
+listeTrames.grid(row=3, columnspan=3)
 
 nombre = Label(fenetre, text='Aucune trame capturée.')
 nombre.grid(row=4, columnspan=3)
