@@ -65,6 +65,10 @@ Il s'agit d'un travail de groupe mis en commun, aucun nom d'un des membres du gr
 
 *Explications des fonctions démarées par les boutons présents sur la fenêtre, soit le démarrage de la capture ainsi que son arrêt.*
 
+##### Démarrage de la capture
+##### Arrêt de la capture
+##### Réiniatilisation de la capture
+
 ### Préparation à la capture
 
 *Explication des paramètres globaux qui vont être nécessaires aux fonctions du logiciel, notamment les variables globales au programme nécessaires avant la capture ainsi que celles qui vont être modifiées pendant.*
@@ -85,15 +89,15 @@ Il s'agit d'un travail de groupe mis en commun, aucun nom d'un des membres du gr
 
 *Explications dans les détails de son fonctionnement, que ça soit en termes de ressources nécessaires, d'utilisation ainsi que des résultats observables à l'écran.*
 
-### Les prérequis
+### Prérequis
 
 *Explication de l'OS nécessaire (Linux) ainsi que toute l'installation qui doit y être présente.*
 
-### L'utilisation
+### Utilisation
 
 *Explication de l'ergonomie apportée avec l'interface graphique, on pourra aussi parler des éventuelles erreurs qui peuvent être causées par une mauvaise utilisation que l'on n'a pas réussi à résoudre.*
 
-### Les résultats
+### Résultats
 
 *Démonstration d'en quoi les résultats répondent en partie au cahier des charges, que ça soit en termes de simplicité d'utilisation ainsi qu'en informations faciles à comprendre pour l'utilisateur lambda.*
 
