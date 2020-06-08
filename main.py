@@ -11,7 +11,6 @@ from tkinter import ttk
 from tkinter import *
 from tkinter.scrolledtext import ScrolledText
 import _thread
-import sys
 import os
 
 
@@ -24,17 +23,17 @@ def commencerCapture():
 
 def changerInterface(event):
 	global interfaceCaptureEnCours
-	interfaceCaptureEnCours = interfaces[listeInterfaces.current()][0]
+	interfaceCaptureEnCours = interfaces[listeInterfaces.current()]
 
 def capture():
 	global numeroDerniereTrame
 	nombre['text'] = 'En attente de trafic ... PING un peu !'
 	fenetre.update_idletasks()
-	for packet in pyshark.LiveCapture(interface=interfaceCaptureEnCours).sniff_continuously(packet_count=10000):
+	for packet in pyshark.LiveCapture(interface=interfaceCaptureEnCours[0]).sniff_continuously(packet_count=10000):
 		if captureEnCours == False:
 			break
 		numeroDerniereTrame += 1
-		trame = str(numeroDerniereTrame)+'    '+interfaceCaptureEnCours+'    '
+		trame = str(numeroDerniereTrame)+'    Sur : '+interfaceCaptureEnCours[1]+'    '
 		if 'eth' in packet:
 			trame += 'Ethernet    '
 			if packet.eth.type == '0x00000800':
@@ -114,7 +113,13 @@ for i in range(len(interfaces)):
 			if interfaces[i][0][:len(n)] == n:
 				interfaces[i][1] = j
 
-interfaceCaptureEnCours = interfaces[0][0]
+interfaceCaptureEnCours = interfaces[0]
+indexInterfaceCaptureEnCours = 0
+for i in range(len(interfaces)):
+	if int(os.popen('ip a s '+interfaces[i][0]+' | head -n 1 | grep "state UP" | wc -l').read()) == 1:
+		interfaceCaptureEnCours = interfaces[i]
+		indexInterfaceCaptureEnCours = i
+
 captureEnCours = False
 numeroDerniereTrame = 0
 
@@ -131,7 +136,7 @@ fenetre.title('EasyShark')
 Label(fenetre, text='Commences pas choisir l\'interface : ').grid(row=0, column=0, columnspan=2)
 
 listeInterfaces = ttk.Combobox(fenetre, values=listeInterfacesValeurs)
-listeInterfaces.current(0)
+listeInterfaces.current(indexInterfaceCaptureEnCours)
 listeInterfaces.grid(row=0, column=1, columnspan=2)
 listeInterfaces.bind("<<ComboboxSelected>>", changerInterface)
 
