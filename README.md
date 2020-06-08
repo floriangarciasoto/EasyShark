@@ -134,6 +134,9 @@ http://tkinter.fdex.eu/doc/lbw.html
 Utilisation de Grid pour Tkinter :
 https://effbot.org/tkinterbook/grid.html
 
+Utilisation de ScrolledText pour Tkinter :
+https://docs.python.org/fr/3/library/tkinter.scrolledtext.html
+
 ### Forums
 
 Retour d'une commande Linux :
