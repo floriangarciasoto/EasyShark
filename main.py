@@ -14,6 +14,8 @@ import _thread
 import sys
 import os
 
+
+
 def commencerCapture():
 	global captureEnCours
 	if captureEnCours == False:
@@ -25,15 +27,14 @@ def changerInterface(event):
 	interfaceCaptureEnCours = interfaces[listeInterfaces.current()][0]
 
 def capture():
-	numeroDerniereTrame = 0
+	global numeroDerniereTrame
 	nombre['text'] = 'En attente de trafic ... PING un peu !'
 	fenetre.update_idletasks()
-	capture = pyshark.LiveCapture(interface=interfaceCaptureEnCours)
-	for packet in capture.sniff_continuously(packet_count=10000):
+	for packet in pyshark.LiveCapture(interface=interfaceCaptureEnCours).sniff_continuously(packet_count=10000):
 		if captureEnCours == False:
 			break
 		numeroDerniereTrame += 1
-		trame = str(numeroDerniereTrame)+'    '
+		trame = str(numeroDerniereTrame)+'    '+interfaceCaptureEnCours+'    '
 		if 'eth' in packet:
 			trame += 'Ethernet    '
 			if packet.eth.type == '0x00000800':
@@ -73,6 +74,7 @@ def stopperCapture():
 
 def reinitialiserCapture():
 	global paquets
+	global numeroDerniereTrame
 	listeTrames.delete(0,len(paquets)-1)
 	numeroDerniereTrame = 0
 	paquets = list()
@@ -91,6 +93,8 @@ def arg(packet):
 	for i in range(0,len(packet)-1,3):
 		tx += packet[i+1][6:]+' : '+packet[i+2][8:]+', '
 	return tx[:-2]
+
+
 
 interfaces = list()
 paquets = list()
