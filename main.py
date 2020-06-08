@@ -23,11 +23,7 @@
 # - TShark    : sudo apt install tshark
 
 # Configuration recommandée :
-# - accorder l'accès aux interfaces
-#   pour les non-super-utilisateurs
-#   (si ce n'est pas le cas, il faudra être
-#   super-utilisateur pour faire fonctionner
-#   la capture)
+# - accorder l'accès aux interfaces pour les non-super-utilisateurs (si ce n'est pas le cas, il faudra être super-utilisateur pour faire fonctionner la capture)
 
 
 # *****************************************
@@ -36,8 +32,7 @@
 
 # Au choix :
 # - Sur le terminal : python3 main.py
-# - Utiliser le double click sur le fichier
-#   si l'OS le permet.
+# - Utiliser le double click sur le fichier si l'OS le permet.
 
 
 
@@ -117,7 +112,7 @@ def reinitialiserCapture():
 	listeTrames.delete(0,len(paquets)-1)
 	numeroDerniereTrame = 0
 	paquets = list()
-	nombre['text'] = 'Aucune trame capturée.'
+	nombre['text'] = 'Aucune trame capturée, en attente de trafic ...'
 
 def clicktrame(event):
 	if len(event.widget.curselection()) > 0:
@@ -196,7 +191,7 @@ listeTrames = Listbox(fenetre, height=20, width=100)
 listeTrames.bind('<<ListboxSelect>>', clicktrame)
 listeTrames.grid(row=3, columnspan=3)
 
-nombre = Label(fenetre, text='Aucune trame capturée.')
+nombre = Label(fenetre, text='Aucune trame capturée, en attente de trafic ...')
 nombre.grid(row=4, columnspan=3)
 
 Label(fenetre, text='Détails imbuvables, regardes pas si t\'es une âme sensible :').grid(row=5, columnspan=3)
