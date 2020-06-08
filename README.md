@@ -114,3 +114,27 @@ Il s'agit d'un travail de groupe mis en commun, aucun nom d'un des membres du gr
 ### Éventuelles améliorations
 
 *Ouverture sur les améliorations qui pourraient être apportées lors d'une éventuelle poursuite du projet, notamment l'aspect graphique du logiciel avec des couleurs, des annimations, etc ...*
+
+## Sources
+
+### Documentation
+
+Librairie pyShark :
+https://github.com/KimiNewt/pyshark
+
+Librairie Tkinter :
+https://docs.python.org/fr/3/library/tkinter.html
+
+Librairie thread pour Python 3 :
+https://docs.python.org/3/library/_thread.html
+
+Utilisation de ListBox pour Tkinter :
+http://tkinter.fdex.eu/doc/lbw.html
+
+Utilisation de Grid pour Tkinter :
+https://effbot.org/tkinterbook/grid.html
+
+### Forums
+
+Retour d'une commande Linux :
+https://stackoverflow.com/questions/3503879/assign-output-of-os-system-to-a-variable-and-prevent-it-from-being-displayed-on

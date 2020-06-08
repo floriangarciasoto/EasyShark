@@ -17,7 +17,7 @@
 
 # Paquets à installer :
 # - Python 3  : sudo apt install python
-# - TKinter   : sudo apt install python3-tk
+# - Tkinter   : sudo apt install python3-tk
 # - PIP 3     : sudo pip3 install pyshark
 # - WireShark : sudo apt install wireshark
 # - TShark    : sudo apt install tshark
