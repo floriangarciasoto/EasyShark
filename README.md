@@ -119,34 +119,34 @@ Il s'agit d'un travail de groupe mis en commun, aucun nom d'un des membres du gr
 
 ### Documentation
 
-Librairie pyShark :
+Librairie pyShark :<br/>
 https://github.com/KimiNewt/pyshark
 
-Librairie Tkinter :
+Librairie Tkinter :<br/>
 https://docs.python.org/fr/3/library/tkinter.html
 
-Librairie thread pour Python 3 :
+Librairie thread pour Python 3 :<br/>
 https://docs.python.org/3/library/_thread.html
 
-Utilisation de ListBox pour Tkinter :
+Utilisation de ListBox pour Tkinter :<br/>
 http://tkinter.fdex.eu/doc/lbw.html
 
-Utilisation de Grid pour Tkinter :
+Utilisation de Grid pour Tkinter :<br/>
 https://effbot.org/tkinterbook/grid.html
 
-Utilisation de ScrolledText pour Tkinter :
+Utilisation de ScrolledText pour Tkinter :<br/>
 https://docs.python.org/fr/3/library/tkinter.scrolledtext.html
 
 ### Forums
 
-OpenClassroom - utilisation des classes en Python :
+OpenClassroom - utilisation des classes en Python :<br/>
 https://openclassrooms.com/fr/courses/235344-apprenez-a-programmer-en-python/232721-apprehendez-les-classes
 
-OpenClassroom - utilisation de Tkinter avec une classe :
+OpenClassroom - utilisation de Tkinter avec une classe :<br/>
 https://openclassrooms.com/fr/courses/235344-apprenez-a-programmer-en-python/234859-creez-des-interfaces-graphiques-avec-tkinter
 
-Retour d'une commande Linux :
+Retour d'une commande Linux :<br/>
 https://stackoverflow.com/questions/3503879/assign-output-of-os-system-to-a-variable-and-prevent-it-from-being-displayed-on
 
-Configuration WireShark :
+Configuration WireShark :<br/>
 https://osqa-ask.wireshark.org/questions/7976/wireshark-setup-linux-for-nonroot-user
