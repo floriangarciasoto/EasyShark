@@ -147,3 +147,6 @@ https://openclassrooms.com/fr/courses/235344-apprenez-a-programmer-en-python/234
 
 Retour d'une commande Linux :
 https://stackoverflow.com/questions/3503879/assign-output-of-os-system-to-a-variable-and-prevent-it-from-being-displayed-on
+
+Configuration WireShark :
+https://osqa-ask.wireshark.org/questions/7976/wireshark-setup-linux-for-nonroot-user

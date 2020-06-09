@@ -16,17 +16,22 @@
 # OS nécessaire : Linux
 
 # Paquets à installer :
-# - Python 3  : sudo apt install python
-# - Tkinter   : sudo apt install python3-tk
-# - PIP 3     : sudo pip3 install pyshark
 # - WireShark : sudo apt install wireshark
 # - TShark    : sudo apt install tshark
+# - Python 3  : sudo apt install python
+# - Tkinter   : sudo apt install python3-tk
 
 # Librairies à installer :
 # - pyShark : pip3 install pyshark
 
 # Configuration recommandée :
-# - accorder l'accès aux interfaces pour les non-super-utilisateurs (si ce n'est pas le cas, il faudra être super-utilisateur pour faire fonctionner la capture)
+# - Permettre aux non-super-utilisateurs de capturer :
+#   - sudo apt-get install wireshark
+#   - sudo dpkg-reconfigure wireshark-common 
+#   - sudo usermod -a -G wireshark $USER
+#   - gnome-session-quit --logout --no-prompt
+# - Si le programme doit marcher en super-utilisateurs :
+#   - sudo pip3 install pyshark
 
 
 # *****************************************
