@@ -65,10 +65,10 @@ class EasyShark:
 			self.interfaces.append([nomSystemeInterface,'Inconnue ('+nomSystemeInterface+')'])
 
 		for i in range(len(self.interfaces)):
-			for j in self.simplificationsInterfaces:
-				for n in self.simplificationsInterfaces[j]:
-					if self.interfaces[i][0][:len(n)] == n:
-						self.interfaces[i][1] = j
+			for typeInterface in self.simplificationsInterfaces:
+				for premieresLettres in self.simplificationsInterfaces[typeInterface]:
+					if self.interfaces[i][0][:len(premieresLettres)] == premieresLettres:
+						self.interfaces[i][1] = typeInterface
 
 		self.interfaceCaptureEnCours = self.interfaces[0]
 		self.indexInterfaceCaptureEnCours = 0
@@ -124,12 +124,12 @@ class EasyShark:
 	def commencerStopperCapture(self):
 		if self.captureEnCours == False:
 			self.captureEnCours = True
-			self.nombreTrames['text'] = 'Aucune trame capturée, en attente de trafic ...'
 			self.boutonCommencerStopper['text'] = 'Stopper'
 			_thread.start_new_thread(self.capture,())
 		else:
 			self.captureEnCours = False
 			self.boutonCommencerStopper['text'] = 'Reprendre'
+			self.nombreTrames['text'] += ' (capture stoppée)'
 
 	def changerInterface(self, event):
 		self.interfaceCaptureEnCours = self.interfaces[self.listeInterfaces.current()]

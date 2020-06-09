@@ -139,5 +139,11 @@ https://docs.python.org/fr/3/library/tkinter.scrolledtext.html
 
 ### Forums
 
+OpenClassroom - utilisation des classes en Python :
+https://openclassrooms.com/fr/courses/235344-apprenez-a-programmer-en-python/232721-apprehendez-les-classes
+
+OpenClassroom - utilisation de Tkinter avec une classe :
+https://openclassrooms.com/fr/courses/235344-apprenez-a-programmer-en-python/234859-creez-des-interfaces-graphiques-avec-tkinter
+
 Retour d'une commande Linux :
 https://stackoverflow.com/questions/3503879/assign-output-of-os-system-to-a-variable-and-prevent-it-from-being-displayed-on
