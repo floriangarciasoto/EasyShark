@@ -22,6 +22,9 @@
 # - WireShark : sudo apt install wireshark
 # - TShark    : sudo apt install tshark
 
+# Librairies à installer :
+# - pyShark : pip3 install pyshark
+
 # Configuration recommandée :
 # - accorder l'accès aux interfaces pour les non-super-utilisateurs (si ce n'est pas le cas, il faudra être super-utilisateur pour faire fonctionner la capture)
 
@@ -50,11 +53,15 @@ import os
 
 # --- Fonctions ---
 
-def commencerCapture():
+def commencerStopperCapture():
 	global captureEnCours
 	if captureEnCours == False:
 		captureEnCours = True
+		boutonCommencerStopper['text'] = 'Stopper'
 		_thread.start_new_thread(capture,())
+	else:
+		captureEnCours = False
+		boutonCommencerStopper['text'] = 'Reprendre'
 
 def changerInterface(event):
 	global interfaceCaptureEnCours
@@ -62,7 +69,7 @@ def changerInterface(event):
 
 def capture():
 	global numeroDerniereTrame
-	nombre['text'] = 'En attente de trafic ... PING un peu !'
+	nombreTrames['text'] = 'En attente de trafic ... PING un peu !'
 	fenetre.update_idletasks()
 	for packet in pyshark.LiveCapture(interface=interfaceCaptureEnCours[0]).sniff_continuously(packet_count=10000):
 		if captureEnCours == False:
@@ -100,12 +107,8 @@ def capture():
 			ligneTrame += 'Ah ben là C compliqué    '
 		listeTrames.insert(END, ligneTrame)
 		paquets.append([explicationsTrame,'Trame %d\n%s' % (numeroDerniereTrame,packet)])
-		nombre['text'] = 'Trames capturées : %d' % numeroDerniereTrame
+		nombreTrames['text'] = 'Trames capturées : %d' % numeroDerniereTrame
 		fenetre.update_idletasks()
-
-def stopperCapture():
-	global captureEnCours
-	captureEnCours = False
 
 def reinitialiserCapture():
 	global paquets
@@ -113,7 +116,11 @@ def reinitialiserCapture():
 	listeTrames.delete(0,len(paquets)-1)
 	numeroDerniereTrame = 0
 	paquets = list()
-	nombre['text'] = 'Aucune trame capturée, en attente de trafic ...'
+	champExplicationsTrame.delete(1.0,END)
+	detailsTrame.delete(1.0,END)
+	nombreTrames['text'] = 'Aucune trame capturée, en attente de trafic ...'
+	if captureEnCours == False:
+		nombreTrames['text'] += ' (faut appuyer sur reprende en fait)'
 
 def clicktrame(event):
 	if len(event.widget.curselection()) > 0:
@@ -182,7 +189,8 @@ listeInterfaces.current(indexInterfaceCaptureEnCours)
 listeInterfaces.grid(row=0, column=1, columnspan=2, sticky=W)
 listeInterfaces.bind("<<ComboboxSelected>>", changerInterface)
 
-tk.Button(fenetre, text='Capturer', command=commencerCapture).grid(row=1,column=0, sticky=E)
+boutonCommencerStopper = tk.Button(fenetre, text='Capturer', command=commencerStopperCapture)
+boutonCommencerStopper.grid(row=1,column=0, sticky=E)
 
 tk.Button(fenetre, text='Réiniatiliser', command=reinitialiserCapture).grid(row=1, column=1, sticky=W)
 
@@ -192,8 +200,8 @@ listeTrames = Listbox(fenetre, height=20, width=100)
 listeTrames.bind('<<ListboxSelect>>', clicktrame)
 listeTrames.grid(row=3, columnspan=2)
 
-nombre = Label(fenetre, text='Aucune trame capturée, en attente de trafic ...')
-nombre.grid(row=4, columnspan=2)
+nombreTrames = Label(fenetre, text='Aucune trame capturée, en attente de trafic ...')
+nombreTrames.grid(row=4, columnspan=2)
 
 
 Label(fenetre, text='J\'t\'explique : ').grid(row=5, column=0)
