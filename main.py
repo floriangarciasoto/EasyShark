@@ -57,6 +57,7 @@ def commencerStopperCapture():
 	global captureEnCours
 	if captureEnCours == False:
 		captureEnCours = True
+		nombreTrames['text'] = 'Aucune trame capturée, en attente de trafic ...'
 		boutonCommencerStopper['text'] = 'Stopper'
 		_thread.start_new_thread(capture,())
 	else:
@@ -118,11 +119,11 @@ def reinitialiserCapture():
 	paquets = list()
 	champExplicationsTrame.delete(1.0,END)
 	detailsTrame.delete(1.0,END)
-	nombreTrames['text'] = 'Aucune trame capturée, en attente de trafic ...'
+	nombreTrames['text'] = 'En attente de trafic à nouveau ...'
 	if captureEnCours == False:
-		nombreTrames['text'] += ' (faut appuyer sur reprende en fait)'
+		nombreTrames['text'] += ' (faut appuyer sur Reprende en fait)'
 
-def clicktrame(event):
+def clickSurTrame(event):
 	if len(event.widget.curselection()) > 0:
 		champExplicationsTrame.delete(1.0,END)
 		champExplicationsTrame.insert(END, '%s' % paquets[int(event.widget.curselection()[0])][0])
@@ -145,7 +146,7 @@ def arg(packet):
 interfaces = list()
 paquets = list()
 
-simplificationInterfaces = {
+simplificationsInterfaces = {
 	'Câble' : ['enp','eno','eth'],
 	'Wifi' : ['wlp'],
 	'Loopback' : ['lo']
@@ -155,8 +156,8 @@ for nomSystemeInterface in os.popen('ip a | grep ^[0-9]*: | cut -d" " -f 2 | sed
 	interfaces.append([nomSystemeInterface,'Inconnue ('+nomSystemeInterface+')'])
 
 for i in range(len(interfaces)):
-	for j in simplificationInterfaces:
-		for n in simplificationInterfaces[j]:
+	for j in simplificationsInterfaces:
+		for n in simplificationsInterfaces[j]:
 			if interfaces[i][0][:len(n)] == n:
 				interfaces[i][1] = j
 
@@ -197,10 +198,10 @@ tk.Button(fenetre, text='Réiniatiliser', command=reinitialiserCapture).grid(row
 Label(fenetre, text='Liste des trames :').grid(row=2, columnspan=2)
 
 listeTrames = Listbox(fenetre, height=20, width=100)
-listeTrames.bind('<<ListboxSelect>>', clicktrame)
+listeTrames.bind('<<ListboxSelect>>', clickSurTrame)
 listeTrames.grid(row=3, columnspan=2)
 
-nombreTrames = Label(fenetre, text='Aucune trame capturée, en attente de trafic ...')
+nombreTrames = Label(fenetre, text='Faut appuyer sur Capturer en fait.')
 nombreTrames.grid(row=4, columnspan=2)
 
 
