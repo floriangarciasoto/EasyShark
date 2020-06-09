@@ -204,15 +204,11 @@ listeTrames.grid(row=3, columnspan=2)
 nombreTrames = Label(fenetre, text='Faut appuyer sur Capturer en fait.')
 nombreTrames.grid(row=4, columnspan=2)
 
-
 Label(fenetre, text='J\'t\'explique : ').grid(row=5, column=0)
-
 champExplicationsTrame = ScrolledText(fenetre, height=10, width=50)
 champExplicationsTrame.grid(row=6, column=0)
 
-
 Label(fenetre, text='Détails imbuvables, regardes pas si t\'es une âme sensible :').grid(row=5, column=1)
-
 detailsTrame = ScrolledText(fenetre, height=10, width=50)
 detailsTrame.grid(row=6, column=1)
 
