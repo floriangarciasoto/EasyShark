@@ -93,6 +93,14 @@ class EasyShark:
 			'Loopback' : ['lo']
 		}
 
+		# Boolean permettant de savoir si la capture est en cours
+		self.captureEnCours = False
+		# Entier permettant de numéroter les trames capturées
+		self.numeroDerniereTrame = 0
+
+
+		# *** Prise en compte des interfaces réseaux ***
+
 		# Pour chaque interface obtenues depuis la console
 		for nomSystemeInterface in os.popen('ip a | grep ^[0-9]*: | cut -d" " -f 2 | sed "s/.$//g"').read().split("\n")[:-1]:
 
@@ -117,31 +125,21 @@ class EasyShark:
 			# Ajout au tableau des interfaces le nom système, le nom pour l'affichage et la capacité de capture de l'interface
 			self.interfaces.append([nomSystemeInterface,nomEcran,interfaceActive])
 
-		# Définition de l'interface de capture utilisée en paramètre de la capture
-		# On choisit par défaut la première du tableau
-		self.interfaceCaptureEnCours = self.interfaces[0]
 		# Définition de l'index par défaut pour la liste déroulante
 		self.indexInterfaceCaptureEnCours = 0
 		# Pour chaque interface
 		for i in range(len(self.interfaces)):
 			# Si l'interface est active
-			if self.interfaces[i][2] == 1:
-				# On remplace par celle qui convient
-				self.interfaceCaptureEnCours = self.interfaces[i]
+			if self.interfaces[i][2] == True:
 				# On remplace l'index par celui de celle qui correspond
 				self.indexInterfaceCaptureEnCours = i
 
-		# Boolean permettant de savoir si la capture est en cours
-		self.captureEnCours = False
-		# Entier permettant de numéroter les trames capturées
-		self.numeroDerniereTrame = 0
-
 		# Tableau qui va contenir tous les noms des interfaces à afficher à l'écran
-		self.listeInterfacesValeurs = list()
+		listeInterfacesValeurs = list()
 		# Pour chaque interface
 		for i in self.interfaces:
 			# On ajoute au tableau le nom à afficher à l'écran
-			self.listeInterfacesValeurs.append(i[1])
+			listeInterfacesValeurs.append(i[1])
 
 
 		# *** Création de la fenêtre ***
@@ -156,13 +154,13 @@ class EasyShark:
 		Label(self.fenetre, text='Commences pas choisir l\'interface : ').grid(row=0, column=0, sticky=E)
 
 		# Création du widget Combobox permettant de créer la liste déroulante
-		self.listeInterfaces = ttk.Combobox(self.fenetre, values=self.listeInterfacesValeurs)
+		self.listeInterfaces = ttk.Combobox(self.fenetre, values=listeInterfacesValeurs)
 		# Choix par défaut de la liste en fonction de l'interface de capture choisie
 		self.listeInterfaces.current(self.indexInterfaceCaptureEnCours)
 		# Ajout de la liste à la fenêtre
 		self.listeInterfaces.grid(row=0, column=1, columnspan=2, sticky=W)
 		# Liaison de l'événement lors du changement de la liste avec la fonction de changement d'interface
-		self.listeInterfaces.bind("<<ComboboxSelected>>", self.changerInterface)
+		self.listeInterfaces.bind('<<ComboboxSelected>>', self.changerInterface)
 
 		# Création du bouton déclencheur de la capture
 		self.boutonCommencerStopper = tk.Button(self.fenetre, text='Capturer', command=self.commencerStopperCapture)
@@ -224,10 +222,12 @@ class EasyShark:
 			# Ajout d'un texte informatif en bas de la liste des trames
 			self.nombreTrames['text'] += ' (capture stoppée)'
 
+
 	# **** Contrôle de l'interface utilisée ****
 	def changerInterface(self, event):
-		# Remplacement de l'interface en cours d'utilisation par la nouvelle
-		self.interfaceCaptureEnCours = self.interfaces[self.listeInterfaces.current()]
+		# Remplacement de l'index de l'interface en cours d'utilisation par celui de la nouvelle
+		self.indexInterfaceCaptureEnCours = self.listeInterfaces.current()
+
 
 	# **** Contrôle de la capture ****
 	def capture(self):
@@ -243,7 +243,7 @@ class EasyShark:
 		# *** Boucle sur chaque trame ***
 
 		# Pour chaque trame capturée sur l'interface spécifiée
-		for trame in pyshark.LiveCapture(interface=self.interfaceCaptureEnCours[0]).sniff_continuously(packet_count=10000):
+		for trame in pyshark.LiveCapture(interface=self.interfaces[self.indexInterfaceCaptureEnCours][0]).sniff_continuously(packet_count=10000):
 			# Si la capture n'est pas censée être en cours
 			if self.captureEnCours == False:
 				# On stoppe la boucle
@@ -251,7 +251,7 @@ class EasyShark:
 			# Incrémentation du numéro de trame
 			self.numeroDerniereTrame += 1
 			# Début par défaut pour la chaîne de caractères présente sur la ligne de la trame dans la liste des trames
-			ligneTrame = str(self.numeroDerniereTrame)+'    Sur : '+self.interfaceCaptureEnCours[1]+'    '
+			ligneTrame = str(self.numeroDerniereTrame)+'    Sur : '+self.interfaces[self.indexInterfaceCaptureEnCours][1]+'    '
 			# Texte explicatif par défaut au cas où les explications ne sont pas fournies pour la trame
 			explicationsTrame = 'Ouais en fait non.'
 
@@ -302,6 +302,7 @@ class EasyShark:
 			# Mise à jour de la fenêtre
 			self.fenetre.update_idletasks()
 
+
 	# **** Contrôle des données récoltées par la capture ****
 	def reinitialiserCapture(self):
 		# Suppression de toutes les lignes dans la liste des trames
@@ -320,6 +321,7 @@ class EasyShark:
 		if self.captureEnCours == False:
 			# On spécifie à l'utilisateur de la réactiver
 			self.nombreTrames['text'] += ' (faut appuyer sur Reprende en fait)'
+
 
 	# **** Lors d'un click sur une trame ****
 	def clickSurTrame(self, event):
