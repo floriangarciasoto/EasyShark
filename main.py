@@ -44,51 +44,106 @@
 
 
 
+# ***** Librairies *****
+
+# *** pyShark ***
 import pyshark
+
+# *** Tkinter ***
+# Utilisation de l'alias tk pour référer à tkinter
 import tkinter as tk
-from tkinter import ttk
+# Importation de tous les sous éléments de la librairie pour l'utilisation des méthodes et des widgets
 from tkinter import *
+# Importation de la partie ttk pour la liste déroulante Combobox
+from tkinter import ttk
+# Importation de ScrolledText depuis la partie scrolledtext de tkinter
 from tkinter.scrolledtext import ScrolledText
+
+# *** Threading pour Python 3 ***
 import _thread
+
+# *** Liaison avec l'OS ***
 import os
 
 
 
+# ***** EasyShark *****
+
+# Définition de la classe EasyShark représentant l'instance de travail de l'application
 class EasyShark:
+
+	# Définition du constructeur de la classe EasyShark
 	def __init__(self):
 
-		self.interfaces = list()
-		self.paquets = list()
+		# *** Initialisation des variables d'instance ***
 
+
+		# Tableau qui va contenir les interfaces réseaux
+		self.interfaces = list()
+
+		# Tableau qui va contenir les trames capturées
+		self.trames = list()
+
+		# Objet contenant la conversion des noms systèmes d'interfaces en nom à afficher à l'écran
 		self.simplificationsInterfaces = {
 			'Câble' : ['enp','eno','eth'],
 			'Wifi' : ['wlp'],
 			'Loopback' : ['lo']
 		}
 
+
+		# Pour chaque interface obtenues depuis la console
 		for nomSystemeInterface in os.popen('ip a | grep ^[0-9]*: | cut -d" " -f 2 | sed "s/.$//g"').read().split("\n")[:-1]:
-			self.interfaces.append([nomSystemeInterface,'Inconnue ('+nomSystemeInterface+')'])
 
-		for i in range(len(self.interfaces)):
+			# Nom par défaut qui sera affiché dans la liste déroulante
+			nomEcran = 'Inconnue ('+nomSystemeInterface+')'
+			# Pour chaque type d'inteface
 			for typeInterface in self.simplificationsInterfaces:
+				# Pour chaque commencement de chaque type
 				for premieresLettres in self.simplificationsInterfaces[typeInterface]:
-					if self.interfaces[i][0][:len(premieresLettres)] == premieresLettres:
-						self.interfaces[i][1] = typeInterface
+					# Si les premières lettres sont les mêmes
+					if nomSystemeInterface[:len(premieresLettres)] == premieresLettres:
+						# Le nom affiché à l'écran sera le type d'interface
+						nomEcran = typeInterface
 
+			# Boolean permettant de savoir si l'interface peut capturer ou non
+			interfaceActive = False
+			# Si l'OS nous dit que l'interface est active
+			if int(os.popen('ip a s '+nomSystemeInterface+' | head -n 1 | grep "state UP" | wc -l').read()) == 1:
+				# On spécifie la capacité de l'interface à capturer
+				interfaceActive = True
+
+			# Ajout au tableau des interfaces le nom système, le nom pour l'affichage et la capacité de capture de l'interface
+			self.interfaces.append([nomSystemeInterface,nomEcran,interfaceActive])
+
+		# Définition de l'interface de capture utilisée en paramètre de la capture
+		# On choisit par défaut la première du tableau
 		self.interfaceCaptureEnCours = self.interfaces[0]
+		# Définition de l'index par défaut pour la liste déroulante
 		self.indexInterfaceCaptureEnCours = 0
+		# Pour chaque interface
 		for i in range(len(self.interfaces)):
-			if int(os.popen('ip a s '+self.interfaces[i][0]+' | head -n 1 | grep "state UP" | wc -l').read()) == 1:
+			# Si l'interface est active
+			if self.interfaces[i][2] == 1:
+				# On remplace par celle qui convient
 				self.interfaceCaptureEnCours = self.interfaces[i]
+				# On remplace l'index par celui de celle qui correspond
 				self.indexInterfaceCaptureEnCours = i
 
+		# Boolean permettant de savoir si la capture est en cours
 		self.captureEnCours = False
+		# Entier permettant de numéroter les trames capturées
 		self.numeroDerniereTrame = 0
 
+		# Tableau qui va contenir tous les noms des interfaces à afficher à l'écran
 		self.listeInterfacesValeurs = list()
+		# Pour chaque interface
 		for i in self.interfaces:
+			# On ajoute au tableau le nom à afficher à l'écran
 			self.listeInterfacesValeurs.append(i[1])
 
+
+		# *** Création de la fenêtre ***
 
 		self.fenetre = tk.Tk()
 
@@ -168,9 +223,9 @@ class EasyShark:
 							elif 'http' in trame:
 								if 'urlencoded-form' in trame:
 									ligneTrame += 'Regardes-moi le ce con il passe ses paramètres en clair :  '
-									argumentsHTTP = str(trame['urlencoded-form']).split('\n')[1:]
-									for i in range(0,len(argumentsHTTP)-1,3):
-										ligneTrame += argumentsHTTP[i+1][6:]+' : '+argumentsHTTP[i+2][8:]+', '
+									parametresURL = str(trame['urlencoded-form']).split('\n')[1:]
+									for i in range(0,len(parametresURL)-1,3):
+										ligneTrame += parametresURL[i+1][6:]+' : '+parametresURL[i+2][8:]+', '
 				elif trame.eth.type == '0x000086dd':
 					ligneTrame += 'IPv6     De %s    à    %s    (imbuvable.com)' % (trame.ipv6.src, trame.ipv6.dst)
 				elif trame.eth.type == '0x00000806':
@@ -180,14 +235,14 @@ class EasyShark:
 			else:
 				ligneTrame += 'Ah ben là C compliqué    '
 			self.listeTrames.insert(END, ligneTrame)
-			self.paquets.append([explicationsTrame,'Trame %d\n%s' % (self.numeroDerniereTrame,trame)])
+			self.trames.append([explicationsTrame,'Trame %d\n%s' % (self.numeroDerniereTrame,trame)])
 			self.nombreTrames['text'] = 'Trames capturées : %d' % self.numeroDerniereTrame
 			self.fenetre.update_idletasks()
 
 	def reinitialiserCapture(self):
-		self.listeTrames.delete(0,len(self.paquets)-1)
+		self.listeTrames.delete(0,len(self.trames)-1)
 		self.numeroDerniereTrame = 0
-		self.paquets = list()
+		self.trames = list()
 		self.champExplicationsTrame.delete(1.0,END)
 		self.detailsTrame.delete(1.0,END)
 		self.nombreTrames['text'] = 'En attente de trafic à nouveau ...'
@@ -197,11 +252,10 @@ class EasyShark:
 	def clickSurTrame(self, event):
 		if len(event.widget.curselection()) > 0:
 			self.champExplicationsTrame.delete(1.0,END)
-			self.champExplicationsTrame.insert(END, '%s' % self.paquets[int(event.widget.curselection()[0])][0])
+			self.champExplicationsTrame.insert(END, '%s' % self.trames[int(event.widget.curselection()[0])][0])
 			self.detailsTrame.delete(1.0,END)
-			self.detailsTrame.insert(END, '%s' % self.paquets[int(event.widget.curselection()[0])][1])
+			self.detailsTrame.insert(END, '%s' % self.trames[int(event.widget.curselection()[0])][1])
 			self.fenetre.update_idletasks()
-
 
 if __name__ == '__main__':
 	EasyShark()
