@@ -43,47 +43,51 @@ ZHOU Yunhan
 Les améliorations désignées dans le rapport de pré-projet ont été apportées.
 Il s'agit d'un travail de groupe mis en commun, aucun nom d'un des membres du groupe ne sera cité.*
 
-### Les libraires utilisées
+### Libraires utilisées
 
 *Explications de façon simple des librairies utilisées ainsi que la justification de leur présence.*
 
 #### Pyshark
+
 #### Tkinter
+
 #### Thread
-#### Sys
-### Création de la fenêtre
+
+#### OS
+
+### La classe EasyShark
+
+#### Constructeur de la classe
+
+##### Prise en compte des interfaces réseaux
+
+##### Initialisation des variables utiles à la capture
+
+##### Création de la fenêtre
 
 *Explcation des différents éléments de la page directement présents après le démarrage du logiciel.*
 
-#### Liste des trames
+#### Fonctions associées à la classe
 
-#### Choix des paramètres de capture
+##### Contrôle de la capture
 
-*Choix de l'interface sur laquelle on veut capturer. Explications de la simplification de ce choix en remplaçant le nom des interfaces par des termes plus parlants comme "Wifi" ou "Câble".*
+##### Contrôle de l'interface réseau utilisée
 
-#### Déclencheurs
+##### Contrôle de la capture
 
-*Explications des fonctions démarées par les boutons présents sur la fenêtre, soit le démarrage de la capture ainsi que son arrêt.*
+###### Initialisation de la capture
 
-##### Démarrage de la capture
-##### Arrêt de la capture
+###### Boucle sur chaque trame
+
+###### Obtention des informations et établissement des explications
+
+###### Application des explications obtenues
+
 ##### Réiniatilisation de la capture
 
-### Préparation à la capture
+##### Lors d'un click sur une trame
 
-*Explication des paramètres globaux qui vont être nécessaires aux fonctions du logiciel, notamment les variables globales au programme nécessaires avant la capture ainsi que celles qui vont être modifiées pendant.*
-
-### Fonctions
-
-*Partie déjà détaillée dans le rapport de pré-projet, seulement des améliorations y sont en plus.*
-
-#### Capture de trames
-##### Démarrage de capture en sous processus
-##### Initialisation de la capture
-##### Obtention des informations sur chaque couche
-##### Rendu des informations obtenues
-#### Clic sur une trame
-#### Récupération de paramètres GET et POST
+#### Démarrage de l'application
 
 ## Fonctionnement
 

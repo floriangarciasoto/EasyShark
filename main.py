@@ -78,13 +78,10 @@ class EasyShark:
 	# **** Constructeur ****
 	def __init__(self):
 
-		# *** Initialisation des variables d'instance ***
+		# *** Prise en compte des interfaces réseaux ***
 
 		# Tableau qui va contenir les interfaces réseaux
 		self.interfaces = list()
-
-		# Tableau qui va contenir les trames capturées
-		self.trames = list()
 
 		# Objet contenant la conversion des noms systèmes d'interfaces en nom à afficher à l'écran
 		self.simplificationsInterfaces = {
@@ -92,14 +89,6 @@ class EasyShark:
 			'Wifi' : ['wlp'],
 			'Loopback' : ['lo']
 		}
-
-		# Boolean permettant de savoir si la capture est en cours
-		self.captureEnCours = False
-		# Entier permettant de numéroter les trames capturées
-		self.numeroDerniereTrame = 0
-
-
-		# *** Prise en compte des interfaces réseaux ***
 
 		# Pour chaque interface obtenues depuis la console
 		for nomSystemeInterface in os.popen('ip a | grep ^[0-9]*: | cut -d" " -f 2 | sed "s/.$//g"').read().split("\n")[:-1]:
@@ -140,6 +129,18 @@ class EasyShark:
 		for i in self.interfaces:
 			# On ajoute au tableau le nom à afficher à l'écran
 			listeInterfacesValeurs.append(i[1])
+
+
+		# *** Initialisation des variables utiles à la capture ***
+
+		# Tableau qui va contenir les trames capturées
+		self.trames = list()
+
+		# Boolean permettant de savoir si la capture est en cours
+		self.captureEnCours = False
+
+		# Entier permettant de numéroter les trames capturées
+		self.numeroDerniereTrame = 0
 
 
 		# *** Création de la fenêtre ***
@@ -223,7 +224,7 @@ class EasyShark:
 			self.nombreTrames['text'] += ' (capture stoppée)'
 
 
-	# **** Contrôle de l'interface utilisée ****
+	# **** Contrôle de l'interface réseau ****
 	def changerInterface(self, event):
 		# Remplacement de l'index de l'interface en cours d'utilisation par celui de la nouvelle
 		self.indexInterfaceCaptureEnCours = self.listeInterfaces.current()
@@ -303,7 +304,7 @@ class EasyShark:
 			self.fenetre.update_idletasks()
 
 
-	# **** Contrôle des données récoltées par la capture ****
+	# **** Réiniatilisation de la capture ****
 	def reinitialiserCapture(self):
 		# Suppression de toutes les lignes dans la liste des trames
 		self.listeTrames.delete(0,len(self.trames)-1)
