@@ -80,7 +80,6 @@ class EasyShark:
 
 		# *** Initialisation des variables d'instance ***
 
-
 		# Tableau qui va contenir les interfaces réseaux
 		self.interfaces = list()
 
@@ -93,7 +92,6 @@ class EasyShark:
 			'Wifi' : ['wlp'],
 			'Loopback' : ['lo']
 		}
-
 
 		# Pour chaque interface obtenues depuis la console
 		for nomSystemeInterface in os.popen('ip a | grep ^[0-9]*: | cut -d" " -f 2 | sed "s/.$//g"').read().split("\n")[:-1]:
@@ -148,39 +146,62 @@ class EasyShark:
 
 		# *** Création de la fenêtre ***
 
+		# Création de la variable globale fenetre afin d'y ajouter nos éléments
 		self.fenetre = tk.Tk()
 
+		# Ajout du titre de la fenêtre
 		self.fenetre.title('EasyShark')
 
+		# Création et ajout du texte à coté de la liste déroulante des interfaces
 		Label(self.fenetre, text='Commences pas choisir l\'interface : ').grid(row=0, column=0, sticky=E)
 
+		# Création du widget Combobox permettant de créer la liste déroulante
 		self.listeInterfaces = ttk.Combobox(self.fenetre, values=self.listeInterfacesValeurs)
+		# Choix par défaut de la liste en fonction de l'interface de capture choisie
 		self.listeInterfaces.current(self.indexInterfaceCaptureEnCours)
+		# Ajout de la liste à la fenêtre
 		self.listeInterfaces.grid(row=0, column=1, columnspan=2, sticky=W)
+		# Liaison de l'événement lors du changement de la liste avec la fonction de changement d'interface
 		self.listeInterfaces.bind("<<ComboboxSelected>>", self.changerInterface)
 
+		# Création du bouton déclencheur de la capture
 		self.boutonCommencerStopper = tk.Button(self.fenetre, text='Capturer', command=self.commencerStopperCapture)
+		# Ajout du bouton à la fenêtre à coté du texte
 		self.boutonCommencerStopper.grid(row=1,column=0, sticky=E)
 
+		# Création et ajout du bouton déclencheur de la réiniatilisation de la capture
 		tk.Button(self.fenetre, text='Réiniatiliser', command=self.reinitialiserCapture).grid(row=1, column=1, sticky=W)
 
+		# Création et ajout du texte au dessus de la liste des trames
 		Label(self.fenetre, text='Liste des trames :').grid(row=2, columnspan=2)
 
+		# Création de la liste des trames
 		self.listeTrames = Listbox(self.fenetre, height=20, width=100)
-		self.listeTrames.bind('<<ListboxSelect>>', self.clickSurTrame)
+		# Ajout de la liste des trames
 		self.listeTrames.grid(row=3, columnspan=2)
+		# Liaison de l'événement lors d'un click sur la liste avec la fonction du click sur une trame
+		self.listeTrames.bind('<<ListboxSelect>>', self.clickSurTrame)
 
+		# Création du texte en bas de la liste des trames
 		self.nombreTrames = Label(self.fenetre, text='Faut appuyer sur Capturer en fait')
+		# Ajout du texte à la fenêtre
 		self.nombreTrames.grid(row=4, columnspan=2)
 
+		# Création et ajout du texte en haut des explications
 		Label(self.fenetre, text='J\'t\'explique : ').grid(row=5, column=0)
+		# Création du champ d'explications de la trame
 		self.champExplicationsTrame = ScrolledText(self.fenetre, height=10, width=50)
+		# Ajout du champ à la fenêtre
 		self.champExplicationsTrame.grid(row=6, column=0)
 
+		# Création et ajout du texte en haut des détails
 		Label(self.fenetre, text='Détails imbuvables, regardes pas si t\'es une âme sensible :').grid(row=5, column=1)
+		# Création du champ d'explications des détails de la trame
 		self.detailsTrame = ScrolledText(self.fenetre, height=10, width=50)
+		# Ajout du champ à la fenêtre
 		self.detailsTrame.grid(row=6, column=1)
 
+		# Mise en route de la fenêtre
 		self.fenetre.mainloop()
 
 
