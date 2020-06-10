@@ -47,6 +47,7 @@
 # ***** Librairies *****
 
 # *** pyShark ***
+# Importation de pyshark pour la capture de trames avec Python
 import pyshark
 
 # *** Tkinter ***
@@ -60,9 +61,11 @@ from tkinter import ttk
 from tkinter.scrolledtext import ScrolledText
 
 # *** Threading pour Python 3 ***
+# Importation de _thread pour lancer en parallèle la fonction de capture de trames
 import _thread
 
 # *** Liaison avec l'OS ***
+# Importation d'os pour le retour des commandes UNIX sur les interfaces réseaux
 import os
 
 
