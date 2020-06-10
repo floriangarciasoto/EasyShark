@@ -75,7 +75,7 @@ import os
 # Définition de la classe EasyShark représentant l'instance de travail de l'application
 class EasyShark:
 
-	# Définition du constructeur de la classe EasyShark
+	# **** Constructeur ****
 	def __init__(self):
 
 		# *** Initialisation des variables d'instance ***
@@ -205,28 +205,59 @@ class EasyShark:
 		self.fenetre.mainloop()
 
 
+	# **** Contrôle de la capture ****
 	def commencerStopperCapture(self):
+		# Si la capture n'est pas en cours
 		if self.captureEnCours == False:
+			# On indique qu'elle l'est maintenant
 			self.captureEnCours = True
+			# Modification du texte du bouton enclenché
 			self.boutonCommencerStopper['text'] = 'Stopper'
+			# Lancement en arrière plan de la fonction de capture
 			_thread.start_new_thread(self.capture,())
+		# Si la capture est en cours
 		else:
+			# On indique qu'elle ne l'est plus
 			self.captureEnCours = False
+			# Modification du texte du bouton enclenché
 			self.boutonCommencerStopper['text'] = 'Reprendre'
+			# Ajout d'un texte informatif en bas de la liste des trames
 			self.nombreTrames['text'] += ' (capture stoppée)'
 
+	# **** Contrôle de l'interface utilisée ****
 	def changerInterface(self, event):
+		# Remplacement de l'interface en cours d'utilisation par la nouvelle
 		self.interfaceCaptureEnCours = self.interfaces[self.listeInterfaces.current()]
 
+	# **** Contrôle de la capture ****
 	def capture(self):
+
+		# *** Initialisation de la capture ***
+
+		# Remplacement du texte en bas signifant l'attente d'éventuelles trames
 		self.nombreTrames['text'] = 'En attente de trafic ... PING un peu !'
+		# Mise à jour de la fenêtre
 		self.fenetre.update_idletasks()
+
+
+		# *** Boucle sur chaque trame ***
+
+		# Pour chaque trame capturée sur l'interface spécifiée
 		for trame in pyshark.LiveCapture(interface=self.interfaceCaptureEnCours[0]).sniff_continuously(packet_count=10000):
+			# Si la capture n'est pas censée être en cours
 			if self.captureEnCours == False:
+				# On stoppe la boucle
 				break
+			# Incrémentation du numéro de trame
 			self.numeroDerniereTrame += 1
+			# Début par défaut pour la chaîne de caractères présente sur la ligne de la trame dans la liste des trames
 			ligneTrame = str(self.numeroDerniereTrame)+'    Sur : '+self.interfaceCaptureEnCours[1]+'    '
+			# Texte explicatif par défaut au cas où les explications ne sont pas fournies pour la trame
 			explicationsTrame = 'Ouais en fait non.'
+
+
+			# *** Obtention des informations et établissement des explications ***
+
 			if 'eth' in trame:
 				ligneTrame += 'Ethernet    '
 				if trame.eth.type == '0x00000800':
@@ -258,28 +289,57 @@ class EasyShark:
 					ligneTrame += 'IPBXv4'
 			else:
 				ligneTrame += 'Ah ben là C compliqué    '
+
+
+			# *** Application des explications obtenues ***
+
+			# Insertion de la ligne de trame formée dans la liste des trames
 			self.listeTrames.insert(END, ligneTrame)
+			# Ajout du texte explicatif ainsi que des détails obtenus au tableau des trames
 			self.trames.append([explicationsTrame,'Trame %d\n%s' % (self.numeroDerniereTrame,trame)])
+			# Mise à jour du texte en bas signifiant le nombre de trames capturées
 			self.nombreTrames['text'] = 'Trames capturées : %d' % self.numeroDerniereTrame
+			# Mise à jour de la fenêtre
 			self.fenetre.update_idletasks()
 
+	# **** Contrôle des données récoltées par la capture ****
 	def reinitialiserCapture(self):
+		# Suppression de toutes les lignes dans la liste des trames
 		self.listeTrames.delete(0,len(self.trames)-1)
+		# Remise à 0 du numéro de trame
 		self.numeroDerniereTrame = 0
+		# Vidage du tableau contenant les trames
 		self.trames = list()
+		# Effacement du champ des explications
 		self.champExplicationsTrame.delete(1.0,END)
+		# Effacement du champ des détails
 		self.detailsTrame.delete(1.0,END)
+		# Remplacement du texte en bas de la liste des trames
 		self.nombreTrames['text'] = 'En attente de trafic à nouveau ...'
+		# Si la capture n'est pas en cours
 		if self.captureEnCours == False:
+			# On spécifie à l'utilisateur de la réactiver
 			self.nombreTrames['text'] += ' (faut appuyer sur Reprende en fait)'
 
+	# **** Lors d'un click sur une trame ****
 	def clickSurTrame(self, event):
+		# Si au moins une trame est seléctionnée
 		if len(event.widget.curselection()) > 0:
-			self.champExplicationsTrame.delete(1.0,END)
-			self.champExplicationsTrame.insert(END, '%s' % self.trames[int(event.widget.curselection()[0])][0])
+			# Effacement du champ des explications afin d'y remplacer le contenu
 			self.detailsTrame.delete(1.0,END)
+			# Remplissage du champ avec les explications de la trame correspondante
 			self.detailsTrame.insert(END, '%s' % self.trames[int(event.widget.curselection()[0])][1])
+			# Effacement du champ des détails afin d'y remplacer le contenu
+			self.champExplicationsTrame.delete(1.0,END)
+			# Remplissage du champ avec les détails de la trame correspondante
+			self.champExplicationsTrame.insert(END, '%s' % self.trames[int(event.widget.curselection()[0])][0])
+			# Mise à jour de la fenêtre
 			self.fenetre.update_idletasks()
 
+
+# **** Démarrage de l'application ****
+
+# Si le programme n'est pas importé depuis un autre programme
 if __name__ == '__main__':
+	# Démarrage de l'instance de l'application
 	EasyShark()
