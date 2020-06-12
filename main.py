@@ -40,7 +40,7 @@
 
 # Au choix :
 # - Sur le terminal : python3 main.py
-# - Utiliser le double click sur le fichier si l'OS le permet.
+# - Utiliser le double clic sur le fichier si l'OS le permet.
 
 
 
@@ -90,7 +90,7 @@ class EasyShark:
 			'Loopback' : ['lo']
 		}
 
-		# Pour chaque interface obtenues depuis la console
+		# Pour chaque interface obtenue depuis la console
 		for nomSystemeInterface in os.popen('ip a | grep ^[0-9]*: | cut -d" " -f 2 | sed "s/.$//g"').read().split("\n")[:-1]:
 
 			# Nom par défaut qui sera affiché dans la liste déroulante
@@ -145,13 +145,13 @@ class EasyShark:
 
 		# *** Création de la fenêtre ***
 
-		# Création de la variable globale fenetre afin d'y ajouter nos éléments
+		# Création de la variable globale fenêtre afin d'y ajouter nos éléments
 		self.fenetre = tk.Tk()
 
 		# Ajout du titre de la fenêtre
 		self.fenetre.title('EasyShark')
 
-		# Création et ajout du texte à coté de la liste déroulante des interfaces
+		# Création et ajout du texte à côté de la liste déroulante des interfaces
 		Label(self.fenetre, text='Commences pas choisir l\'interface : ').grid(row=0, column=0, sticky=E)
 
 		# Création du widget Combobox permettant de créer la liste déroulante
@@ -165,20 +165,20 @@ class EasyShark:
 
 		# Création du bouton déclencheur de la capture
 		self.boutonCommencerStopper = tk.Button(self.fenetre, text='Capturer', command=self.commencerStopperCapture)
-		# Ajout du bouton à la fenêtre à coté du texte
+		# Ajout du bouton à la fenêtre à côté du texte
 		self.boutonCommencerStopper.grid(row=1,column=0, sticky=E)
 
 		# Création et ajout du bouton déclencheur de la réiniatilisation de la capture
 		tk.Button(self.fenetre, text='Réiniatiliser', command=self.reinitialiserCapture).grid(row=1, column=1, sticky=W)
 
-		# Création et ajout du texte au dessus de la liste des trames
+		# Création et ajout du texte au-dessus de la liste des trames
 		Label(self.fenetre, text='Liste des trames :').grid(row=2, columnspan=2)
 
 		# Création de la liste des trames
 		self.listeTrames = Listbox(self.fenetre, height=20, width=100)
 		# Ajout de la liste des trames
 		self.listeTrames.grid(row=3, columnspan=2)
-		# Liaison de l'événement lors d'un click sur la liste avec la fonction du click sur une trame
+		# Liaison de l'événement lors d'un clic sur la liste avec la fonction du clic sur une trame
 		self.listeTrames.bind('<<ListboxSelect>>', self.clickSurTrame)
 
 		# Création du texte en bas de la liste des trames
@@ -194,7 +194,7 @@ class EasyShark:
 		self.champExplicationsTrame.grid(row=6, column=0)
 
 		# Création et ajout du texte en haut des détails
-		Label(self.fenetre, text='Détails imbuvables, regardes pas si t\'es une âme sensible :').grid(row=5, column=1)
+		Label(self.fenetre, text='Détails imbuvables, ne regardes pas si tu es nature fragile et sensible :').grid(row=5, column=1)
 		# Création du champ d'explications des détails de la trame
 		self.detailsTrame = ScrolledText(self.fenetre, height=10, width=50)
 		# Ajout du champ à la fenêtre
@@ -212,7 +212,7 @@ class EasyShark:
 			self.captureEnCours = True
 			# Modification du texte du bouton enclenché
 			self.boutonCommencerStopper['text'] = 'Stopper'
-			# Lancement en arrière plan de la fonction de capture
+			# Lancement en arrière-plan de la fonction de capture
 			_thread.start_new_thread(self.capture,())
 		# Si la capture est en cours
 		else:
@@ -294,7 +294,7 @@ class EasyShark:
 
 			# *** Application des explications obtenues ***
 
-			# Insertion de la ligne de trame formée dans la liste des trames
+			# Insertion de la ligne de texte de la trame formée dans la liste des trames
 			self.listeTrames.insert(END, ligneTrame)
 			# Ajout du texte explicatif ainsi que des détails obtenus au tableau des trames
 			self.trames.append([explicationsTrame,'Trame %d\n%s' % (self.numeroDerniereTrame,trame)])
@@ -304,7 +304,7 @@ class EasyShark:
 			self.fenetre.update_idletasks()
 
 
-	# **** Réiniatilisation de la capture ****
+	# **** Réinitialisation de la capture ****
 	def reinitialiserCapture(self):
 		# Suppression de toutes les lignes dans la liste des trames
 		self.listeTrames.delete(0,END)
@@ -324,7 +324,7 @@ class EasyShark:
 			self.nombreTrames['text'] += ' (faut appuyer sur Reprende en fait)'
 
 
-	# **** Lors d'un click sur une trame ****
+	# **** Lors d'un clic sur une trame ****
 	def clickSurTrame(self, event):
 		# Si au moins une trame est seléctionnée
 		if len(self.listeTrames.curselection()) > 0:
