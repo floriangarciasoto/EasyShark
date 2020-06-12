@@ -139,7 +139,7 @@ class EasyShark:
 		# Boolean permettant de savoir si la capture est en cours
 		self.captureEnCours = False
 
-		# Entier permettant de numéroter les trames capturées
+		# Entier permettant de numéroter les trames capturées, le compteur de trames
 		self.numeroDerniereTrame = 0
 
 
@@ -249,7 +249,7 @@ class EasyShark:
 			if self.captureEnCours == False:
 				# On stoppe la boucle
 				break
-			# Incrémentation du numéro de trame
+			# Incrémentation du compteur de trames
 			self.numeroDerniereTrame += 1
 			# Début par défaut pour la chaîne de caractères présente sur la ligne de la trame dans la liste des trames
 			ligneTrame = str(self.numeroDerniereTrame)+'    Sur : '+self.interfaces[self.indexInterfaceCaptureEnCours][1]+'    '
@@ -307,8 +307,8 @@ class EasyShark:
 	# **** Réiniatilisation de la capture ****
 	def reinitialiserCapture(self):
 		# Suppression de toutes les lignes dans la liste des trames
-		self.listeTrames.delete(0,len(self.trames)-1)
-		# Remise à 0 du numéro de trame
+		self.listeTrames.delete(0,END)
+		# Remise à 0 du compteur de trames
 		self.numeroDerniereTrame = 0
 		# Vidage du tableau contenant les trames
 		self.trames = list()
