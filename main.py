@@ -327,17 +327,17 @@ class EasyShark:
 	# **** Lors d'un click sur une trame ****
 	def clickSurTrame(self, event):
 		# Si au moins une trame est seléctionnée
-		if len(event.widget.curselection()) > 0:
+		if len(self.listeTrames.curselection()) > 0:
+			# Utilisation d'un index temporaire pour la seléction de la trame
+			indexSelection = self.listeTrames.curselection()[0]
 			# Effacement du champ des explications afin d'y remplacer le contenu
 			self.detailsTrame.delete(1.0,END)
 			# Remplissage du champ avec les explications de la trame correspondante
-			self.detailsTrame.insert(END, '%s' % self.trames[int(event.widget.curselection()[0])][1])
+			self.detailsTrame.insert(END, '%s' % self.trames[indexSelection][1])
 			# Effacement du champ des détails afin d'y remplacer le contenu
 			self.champExplicationsTrame.delete(1.0,END)
 			# Remplissage du champ avec les détails de la trame correspondante
-			self.champExplicationsTrame.insert(END, '%s' % self.trames[int(event.widget.curselection()[0])][0])
-			# Mise à jour de la fenêtre
-			self.fenetre.update_idletasks()
+			self.champExplicationsTrame.insert(END, '%s' % self.trames[indexSelection][0])
 
 
 # **** Démarrage de l'application ****
