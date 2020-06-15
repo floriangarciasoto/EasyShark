@@ -257,39 +257,91 @@ class EasyShark:
 			explicationsTrame = 'Ouais en fait non.'
 
 
+
 			# *** Obtention des informations et établissement des explications ***
 
-			if 'eth' in trame:
-				ligneTrame += 'Ethernet    '
-				if trame.eth.type == '0x00000800':
-					ligneTrame += 'IPv4    '
-					if trame.ip.proto == '1':
-						ligneTrame += 'ICMP'
-						if trame.icmp.type == '8':
-							ligneTrame += ' PING'
-						if trame.icmp.type == '0':
-							ligneTrame += ' PONG'
-						ligneTrame += '    De %s    à    %s' % (trame.ip.src, trame.ip.dst)
-					elif trame.ip.proto == '6':
-						ligneTrame += 'TCP    '
-						if trame.tcp.dstport == '80':
-							ligneTrame += 'HTTP    '
-							if trame.tcp.flags_syn == '1':
-								ligneTrame += 'Connexion au site : %s' % trame.ip.dst
-							elif 'http' in trame:
-								if 'urlencoded-form' in trame:
-									ligneTrame += 'Regardes-moi le ce con il passe ses paramètres en clair :  '
-									parametresURL = str(trame['urlencoded-form']).split('\n')[1:]
+			if "eth" in trame:
+
+				ligneTrame += "Ethernet    "
+				explicationsTrame = "C'est une trame de type Ethernet, sans plus de précisions"
+				
+				if trame.eth.type == "0x00000800":
+				
+					ligneTrame += "IPv4    "
+					explicationsTrame = "C'est un paquet IPv4 qui va de %s à %s, mais on ne sait pas quel protocole se trouve dessus" % (trame.ip.src, trame.ip.dst)
+				
+					if trame.ip.proto == "1":
+				
+						ligneTrame += "ICMP"
+						explicationsTrame = "C'est de l'ICMP mais c'est pas du ping"
+				
+						if trame.icmp.type == "8":
+				
+							ligneTrame += " PING"
+							explicationsTrame = "Là c'est %s qui demande à %s s'il est en vie." % (trame.ip.src, trame.ip.dst)
+				
+						if trame.icmp.type == "0":
+				
+							ligneTrame += " PONG"
+							explicationsTrame = "Là c'est %s qui répond à %s qu'il est en vie." % (trame.ip.dst, trame.ip.src)
+				
+						ligneTrame += "    De %s    à    %s" % (trame.ip.src, trame.ip.dst)
+				
+					elif trame.ip.proto == "6":
+				
+						ligneTrame += "TCP    "
+				
+						if trame.tcp.dstport == "80":
+				
+							ligneTrame += "HTTP    "
+							explicationsTrame = "Ca c'est du HTTP"
+				
+							if trame.tcp.flags_syn == "1":
+				
+								ligneTrame += "Connexion au site : %s" % trame.ip.dst
+								explicationsTrame = "Requête HTTP sur un site"
+				
+							elif "http" in trame:
+								if "urlencoded-form" in trame:
+				
+									ligneTrame += "HTTP avec paramètres (GET ou POST)  "
+									explicationsTrame = "Dans cette requête HTTP il y a des paramètres"
+					
+									parametresURL = str(trame['urlencoded-form']).split("\n")[1:]
 									for i in range(0,len(parametresURL)-1,3):
-										ligneTrame += parametresURL[i+1][6:]+' : '+parametresURL[i+2][8:]+', '
-				elif trame.eth.type == '0x000086dd':
-					ligneTrame += 'IPv6     De %s    à    %s    (imbuvable.com)' % (trame.ipv6.src, trame.ipv6.dst)
-				elif trame.eth.type == '0x00000806':
-					ligneTrame += 'ARP ma gueule !'
+										ligneTrame += parametresURL[i+1][6:]+" : "+parametresURL[i+2][8:]+", "
+
+						if trame.tcp.dstport == "22":
+							ligneTrame += "SSH    "
+							explicationsTrame = "SSH permet de contrôler une machine à distance"
+
+						if trame.tcp.dstport == "20" or trame.tcp.dstport == "21":
+							ligneTrame += "FTP    "
+							explicationsTrame = "FTP est un protocole de transfert de fichiers "
+
+					elif trame.ip.proto == "17":
+
+						ligneTrame += "UDP    "
+
+						if trame.udp.dstport == "53":
+							ligneTrame += "DNS    "
+							explicationsTrame = "DNS est un protocole permettant de faire correspondre un nom de domaine tel que google.fr à une adresse IP"
+
+				elif trame.eth.type == "0x000086dd":
+	
+					ligneTrame += "IPv6     De %s    à    %s    (imbuvable.com)" % (trame.ipv6.src, trame.ipv6.dst)
+
+				elif trame.eth.type == "0x00000806":
+	
+					ligneTrame += "ARP permet de trouver l'adresse MAC d'une machine à partir de son adresse IP sur un réseau local"
+	
 				else:
-					ligneTrame += 'IPBXv4'
+	
+					ligneTrame += "Ca c'est pas de l'IP"
+	
 			else:
-				ligneTrame += 'Ah ben là C compliqué    '
+				ligneTrame += "Ca c'est pas de l'Ethernet    "
+
 
 
 			# *** Application des explications obtenues ***
